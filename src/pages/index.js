@@ -1,21 +1,55 @@
-import React from "react"
-import { Link } from "gatsby"
+import React, { useState, useEffect } from "react";
+import Layout from "../components/layout";
+import Activity from "../components/activity";
+import uuid from "uuid";
+import "./index.css";
 
-import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
+const IndexPage = () => {
+  const sessionTasks = sessionStorage.getItem("tasks");
+  const [tasks, setTasks] = useState(sessionTasks ? sessionTasks : []);
+  const descInput = React.createRef();
+  const getAllTheData = task => {
+    console.log("YAY WE GOT THE DATA");
+    const removeIndex = tasks.map(t => t.id).indexOf(task.id);
+    tasks.splice(removeIndex, 1);
 
-const IndexPage = () => (
-  <Layout>
-    <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <Link to="/page-2/">Go to page 2</Link>
-  </Layout>
-)
+    setTasks([
+      ...tasks,
+      {
+        ...task,
+      },
+    ]);
+  };
 
-export default IndexPage
+  useEffect(() => {
+    sessionStorage.setItem("tasks", [JSON.stringify(tasks)]);
+  }, [tasks]);
+
+  return (
+    <Layout>
+      <label>
+        Description
+        <input type="text" className="desc" ref={descInput} />
+      </label>
+      <button
+        type="button"
+        onClick={() => {
+          setTasks([
+            ...tasks,
+            {
+              id: uuid(),
+              startTime: new Date().getTime(),
+              description: descInput.current.value,
+            },
+          ]);
+          descInput.current.value = "";
+        }}
+      >
+        Start Task
+      </button>
+      <Activity tasks={tasks} getData={getAllTheData} />
+    </Layout>
+  );
+};
+
+export default IndexPage;
