@@ -6,7 +6,7 @@ import uuid from "uuid";
 import "./index.css";
 
 const IndexPage = () => {
-  const sessionTasks = sessionStorage.getItem("tasks");
+  const sessionTasks = window.sessionStorage.getItem("tasks");
   const [tasks, setTasks] = useState(
     sessionTasks ? JSON.parse(sessionTasks) : []
   );
@@ -25,7 +25,7 @@ const IndexPage = () => {
   };
 
   useEffect(() => {
-    sessionStorage.setItem("tasks", [JSON.stringify(tasks)]);
+    window.sessionStorage.setItem("tasks", [JSON.stringify(tasks)]);
   }, [tasks]);
 
   return (
