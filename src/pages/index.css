@@ -1,8 +1,26 @@
+main, footer {
+  color: black;
+}
+
+.activity-wrap {
+  margin: 30px 0 0 0;
+}
+
+.desc {
+  margin: 0 10px;
+}
+
 .task {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  margin: 10px;
+  color: black;
+}
+
+.activity-wrap .task:nth-child(even) {
+  background: rgba(139, 182, 157, 0.25);
 }
 
 .task > div {

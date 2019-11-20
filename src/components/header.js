@@ -5,7 +5,7 @@ import React from "react";
 const Header = ({ siteTitle }) => (
   <header
     style={{
-      background: `#615fa6`,
+      background: `#3f7367`,
       marginBottom: `1.45rem`,
     }}
   >
@@ -25,6 +25,9 @@ const Header = ({ siteTitle }) => (
           }}
         >
           {siteTitle}
+          <span role="img" aria-label="alarm clock">
+            ⏰
+          </span>
         </Link>
       </h1>
     </div>

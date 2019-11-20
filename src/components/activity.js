@@ -2,12 +2,11 @@ import React, { Fragment } from "react";
 import Task from "./task";
 
 function Activity({ tasks, getData }) {
-  console.log("tasks-activity", tasks);
-
   const listTasks = tasks.map((item, key) => {
     return (
       <Task
         key={key}
+        index={key}
         id={item.id}
         startTime={item.startTime}
         endTime={item.endTime}
@@ -20,12 +19,17 @@ function Activity({ tasks, getData }) {
 
   return (
     <Fragment>
-      {tasks.length && (
+      {tasks.length ? (
         <div className="activity-wrap">
-          <h2>Activity</h2>
+          <h2>
+            Activity{" "}
+            <span role="img" aria-label="News paper">
+              📰
+            </span>
+          </h2>
           {listTasks}
         </div>
-      )}
+      ) : null}
     </Fragment>
   );
 }

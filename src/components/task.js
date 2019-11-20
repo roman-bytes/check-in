@@ -2,7 +2,15 @@ import React, { useEffect, useState } from "react";
 import Time from "react-time";
 import ms from "pretty-ms";
 
-function Task({ id, startTime, endTime, description, duration, getData }) {
+function Task({
+  index,
+  id,
+  startTime,
+  endTime,
+  description,
+  duration = 0,
+  getData,
+}) {
   const stopTimer = () => {
     setTimerOn(false);
     setDurationCounter(0);
@@ -10,10 +18,14 @@ function Task({ id, startTime, endTime, description, duration, getData }) {
   };
 
   const [durationCounter, setDurationCounter] = useState(0);
-  const [isTimerOn, setTimerOn] = useState(true);
+  const [isTimerOn, setTimerOn] = useState(false);
   const [showClockOut, setShowClockOut] = useState(true);
   useEffect(() => {
     let interval = null;
+    if (!endTime) {
+      // Only start timer for new tasks
+      setTimerOn(true);
+    }
     if (isTimerOn) {
       interval = setInterval(() => {
         setDurationCounter(durationCounter => durationCounter + 1000);
@@ -22,26 +34,14 @@ function Task({ id, startTime, endTime, description, duration, getData }) {
       clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [isTimerOn, durationCounter]);
+  }, [setTimerOn, durationCounter, endTime, isTimerOn]);
 
   return (
     <div className="task">
-      <div className="start time">
-        <div>Start Time</div>
-        <Time value={startTime} format="HH:mm:ss" />
-      </div>
-      <div className="stop time">
-        <div>End Time</div>
-        {endTime ? <Time value={endTime} format="HH:mm:sss" /> : "--:--:--"}
-      </div>
-      <div className="duration">
-        <div>Duration</div>
-        {isTimerOn ? ms(durationCounter) : ms(duration)}
-      </div>
-      <div className="description">{description}</div>
-      {showClockOut && (
-        <div className="clock-out">
+      <div className="clock-out">
+        {showClockOut ? (
           <button
+            aria-label={`Stop task - ${description}`}
             type="button"
             onClick={() => {
               getData({
@@ -54,10 +54,28 @@ function Task({ id, startTime, endTime, description, duration, getData }) {
               stopTimer();
             }}
           >
-            Clock out
+            Stop task
           </button>
-        </div>
-      )}
+        ) : (
+          <div>{`Task: ${index + 1}`}</div>
+        )}
+      </div>
+      <div className="start time">
+        <div>Start Time</div>
+        <Time value={startTime} format="hh:mm:ss" />
+      </div>
+      <div className="stop time">
+        <div>End Time</div>
+        {endTime ? <Time value={endTime} format="hh:mm:sss" /> : "--:--:--"}
+      </div>
+      <div className="duration">
+        <div>Duration</div>
+        {isTimerOn ? ms(durationCounter) : ms(duration)}
+      </div>
+      <div className="description">
+        <div>Description</div>
+        {description}
+      </div>
     </div>
   );
 }
