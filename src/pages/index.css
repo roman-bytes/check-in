@@ -30,7 +30,7 @@ main, footer {
   height: 81px;
 }
 
-footer {
-  position: absolute;
-  bottom: 0;
+.error {
+  color: red;
+  font-size: 12px;
 }

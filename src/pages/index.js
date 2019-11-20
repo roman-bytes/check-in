@@ -10,10 +10,36 @@ const IndexPage = () => {
   if (typeof window !== "undefined") {
     sessionTasks = window.sessionStorage.getItem("tasks");
   }
+  const [inputError, setInputError] = useState(false);
+  const [activeError, setAlreadyActiveError] = useState(false);
   const [tasks, setTasks] = useState(
     sessionTasks ? JSON.parse(sessionTasks) : []
   );
   const descInput = React.createRef();
+  const addTask = () => {
+    const emptyVal = descInput.current.value;
+    const activateTask = document.querySelector(".active-timer");
+    if (!emptyVal) {
+      setInputError(true);
+      return;
+    }
+    if (activateTask) {
+      setInputError(false);
+      setAlreadyActiveError(true);
+      return;
+    }
+    setTasks([
+      ...tasks,
+      {
+        id: uuid(),
+        startTime: new Date().getTime(),
+        description: descInput.current.value,
+      },
+    ]);
+    descInput.current.value = "";
+    setInputError(false);
+    setAlreadyActiveError(false);
+  };
   const getAllTheData = task => {
     // Find current task and "update"
     const removeIndex = tasks.map(t => t.id).indexOf(task.id);
@@ -40,25 +66,33 @@ const IndexPage = () => {
         What are you going to work on today?{" "}
         <span role="img" aria-label="man working on computer">
           👨‍💻
-        </span>{" "}
+        </span>
         <br />
         <br />
+        {inputError && <div className="error">Please add a description</div>}
+        {activeError && (
+          <div className="error">
+            There is already an active task, please finish the active task
+            before starting a new one.
+          </div>
+        )}
         <label>
           Description:
-          <input type="text" className="desc" ref={descInput} />
+          <input
+            type="text"
+            className="desc"
+            ref={descInput}
+            onKeyPress={e => {
+              if (e.which === 13) {
+                addTask();
+              }
+            }}
+          />
         </label>
         <button
           type="button"
           onClick={() => {
-            setTasks([
-              ...tasks,
-              {
-                id: uuid(),
-                startTime: new Date().getTime(),
-                description: descInput.current.value,
-              },
-            ]);
-            descInput.current.value = "";
+            addTask();
           }}
         >
           Start Task

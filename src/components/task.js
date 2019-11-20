@@ -37,7 +37,7 @@ function Task({
   }, [setTimerOn, durationCounter, endTime, isTimerOn]);
 
   return (
-    <div className="task">
+    <div className={isTimerOn ? "active-timer task" : "task"}>
       <div className="clock-out">
         {showClockOut ? (
           <button
